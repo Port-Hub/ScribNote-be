@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const analyse = require("./analyse");
 const home = require("./home");
+const summarize = require("./summarize");
 
 class App {
   express;
@@ -35,7 +36,7 @@ class App {
 
     this.express.use("/analyse", analyse);
 
-
+    this.express.use("/summarize", summarize);
   }
 
 }
