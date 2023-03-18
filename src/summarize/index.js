@@ -5,7 +5,6 @@ const summarize = Router();
 
 summarize.post("/", async (req, res) => {
     params = req.body;
-    console.log(params.paragraph)
     await summarizeFunction(params.paragraph, (results) => {
         if (!results) {
             console.log("Error");

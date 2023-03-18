@@ -4,6 +4,9 @@ const analyseFunction = async (params, callback) => {
     try {
         async function query(filename) {
             try{
+            if(!filename) return callback({ message: "Please upload your audio file", code: 500 });
+            else
+            {
                 const { path } = filename;
                 const data = fs.readFileSync(path);
                 const response = await fetch(
@@ -16,9 +19,10 @@ const analyseFunction = async (params, callback) => {
                 );
                 const result = await response.json();
                 return result;
+            }
                 } catch (err) {
                     console.log("Analyse Function : "+err);
-                    return callback({ message: "Internal Error", code: 500 });
+                    return callback({ message: "Analyse Error", code: 500 });
                 }
         }
         
