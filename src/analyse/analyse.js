@@ -17,7 +17,7 @@ const analyseFunction = async (params, callback) => {
                 const result = await response.json();
                 return result;
                 } catch (err) {
-                    console.log(err);
+                    console.log("Analyse Function : "+err);
                     return callback({ message: "Internal Error", code: 500 });
                 }
         }
