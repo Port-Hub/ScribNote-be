@@ -9,7 +9,7 @@ class AnalyseController {
                     const { path } = filename;
                     const data: Buffer = readFileSync(path);
                     const response: any = await fetch(
-                        "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h",
+                        "https://api-inference.huggingface.co/models/facebook/wav2vec2-large-960h-lv60-self",
                         {
                             headers: { Authorization: "Bearer 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" },
                             method: "POST",
@@ -17,7 +17,15 @@ class AnalyseController {
                         }
                     );
                     const result: any = await response.json();
-                    return result;
+                    if(result.error)
+                    {
+                        console.log("Analyse Function : "+result.error);
+                        return callback({ message: "Model is Loading", code: 412})
+                    }
+                    else
+                    {
+                        return result;
+                    }
                     } catch (err) {
                         console.log("Analyse Function : "+err);
                         return callback({ message: "Internal Error", code: 500 });
