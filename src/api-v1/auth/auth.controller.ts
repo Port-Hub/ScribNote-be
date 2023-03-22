@@ -49,7 +49,7 @@ class AuthController {
     try {
       const { username, password } = req.body;
       if ( username && password ) {
-        const userAvailable = await prisma.users.findFirst({
+        const userAvailable = await prisma.users.findUnique({
           where: {
             username,
           },
