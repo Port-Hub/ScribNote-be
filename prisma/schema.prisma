@@ -9,3 +9,12 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model users {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  wallet    Decimal  @default(0) @db.Decimal(10, 5)
+}
