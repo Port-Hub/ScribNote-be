@@ -9,9 +9,9 @@ class AnalyseController {
                     const { path } = filename;
                     const data: Buffer = readFileSync(path);
                     const response: any = await fetch(
-                        "https://api-inference.huggingface.co/models/facebook/wav2vec2-large-960h-lv60-self",
+                        "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h",
                         {
-                            headers: { Authorization: "Bearer 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" },
+                            headers: { Authorization: "Bearer "+process.env.HF_API_KEY },
                             method: "POST",
                             body: data,
                         }
@@ -20,7 +20,7 @@ class AnalyseController {
                     if(result.error)
                     {
                         console.log("Analyse Function : "+result.error);
-                        return callback({ message: "Model is Loading", code: 412})
+                        return callback({ message: result.error, code: 500})
                     }
                     else
                     {
