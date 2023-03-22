@@ -1,11 +1,10 @@
 import app from "./app";
 import * as dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
+import prisma from "./middleware/prisma";
 
 dotenv.config();
 
 const PORT: String | undefined = process.env.PORT;
-const prisma = new PrismaClient();
 
 // Connections Begin
 

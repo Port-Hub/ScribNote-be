@@ -2,7 +2,7 @@ import * as cohere from "cohere-ai";
 import { Request, Response } from "express";
 
 export default class SummarizeController {
-    public summarizeFunction = async (params, callback) => {
+    public summarizeFunction = async (params: string, callback: { (results: any): void; (arg0: { message: any; code: number; }): any; }) => {
         try {
             const coherekey: string = process.env.COHERE_API_KEY!
             cohere.init(coherekey);
