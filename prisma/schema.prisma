@@ -17,15 +17,16 @@ model users {
   password  String   @db.VarChar(255)
   createdAt DateTime @default(now())
   wallet    Decimal  @default(0) @db.Decimal(10, 5)
+  notes     notes[]
 }
 
 model notes {
-  id                String  @id @default(uuid())
-  userId            String
-  name              String  @unique @db.VarChar(255)
-  nameSlug          String  @unique @db.VarChar(255)
-  docUrl            String  @unique @db.VarChar(255)
-  audioUrl          String  @unique @db.VarChar(255)
-  accessCount       Int?    @default(0)
-  user              users   @relation(fields: [userId], references: [id])
-}d
+  id          String @id @default(uuid())
+  userId      String
+  name        String @unique @db.VarChar(255)
+  nameSlug    String @unique @db.VarChar(255)
+  docUrl      String @unique @db.VarChar(255)
+  audioUrl    String @unique @db.VarChar(255)
+  accessCount Int?   @default(0)
+  user        users  @relation(fields: [userId], references: [id])
+}
