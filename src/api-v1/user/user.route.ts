@@ -3,7 +3,7 @@ import UserController from "./user.controller";
 
 
 const user: Router = Router();
-const userController = new UserController();
+const userController: UserController = new UserController();
 
 user.get("/profile", userController.profile);
 user.get("/notes", userController.notes);

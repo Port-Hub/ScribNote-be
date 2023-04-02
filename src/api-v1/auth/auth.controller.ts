@@ -2,16 +2,17 @@ import { Request, Response } from "express";
 import { hash, compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import prisma from "../../middleware/prisma";
+import { users } from "@prisma/client";
 
 class AuthController {
-  public register = async (req: Request, res: Response) => {
+  public register: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>> = async (req, res) => {
     try {
       const { email, password, username } = req.body;
       if (email && password && username) {
-        const emailAvailable = await prisma.users.findFirst({
+        const emailAvailable: users = await prisma.users.findFirst({
           where: { email },
         });
-        const userAvailable = await prisma.users.findFirst({
+        const userAvailable: users = await prisma.users.findFirst({
           where: { username },
         });
         if (emailAvailable) {
@@ -27,19 +28,23 @@ class AuthController {
           });
         }
         else {
-          let hashedPassword = await hash(password, 10);
-          let userCreated = await prisma.users.create({
+          let hashedPassword: string = await hash(password, 10);
+          let userCreated: users = await prisma.users.create({
             data: {
               email,
               username,
               password: hashedPassword,
             },
           });
-          res.json({
-            success: true,
-            message: "User created successfully",
-            user: userCreated,
-          });
+          if(userCreated)
+          {
+            const { id, password, createdAt, ...others } = userCreated;
+            res.json({
+              success: true,
+              message: "User created successfully",
+              user: others,
+            });
+          }
         }
       } else {
         res.json({
@@ -55,20 +60,20 @@ class AuthController {
     }
   };
 
-  public login = async (req: Request, res: Response): Promise<any> => {
+  public login: (req: Request, res: Response) => Promise<any> = async (req, res) => {
     try {
       const { username, password } = req.body;
       if ( username && password ) {
-        const userAvailable = await prisma.users.findUnique({
+        const userAvailable: users = await prisma.users.findUnique({
           where: {
             username,
           },
         });
         if (userAvailable) {
-          let isMatch = await compare(password, userAvailable.password);
+          let isMatch: boolean = await compare(password, userAvailable.password);
           if (isMatch) {
-            let payload = { id: userAvailable.id };
-            let token = sign({ payload }, process.env.JWT_AUTH_SECRET, {
+            let payload: { id: any } = { id: userAvailable.id };
+            let token: string = sign({ payload }, process.env.JWT_AUTH_SECRET, {
               expiresIn: "1h",
             });
             res.json({

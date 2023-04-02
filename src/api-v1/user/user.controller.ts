@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import prisma from "../../middleware/prisma";
+import { notes, users } from "@prisma/client";
 
 class UserController
 {
-    public profile = async (req: Request, res: Response): Promise<any> => {
+    public profile: (req: Request, res: Response) => Promise<any> = async (req, res) => {
         try {
             const { id } = res.locals.user;
             if (id) {
-                const user = await prisma.users.findUnique({
+                const user: users = await prisma.users.findUnique({
                     where: {
                         id,
                     },
@@ -31,7 +32,7 @@ class UserController
                     message: "Please log in again",
                 });
             }
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({
                 success: false,
                 message: err.toString(),
@@ -39,11 +40,11 @@ class UserController
         }
     }
 
-    public notes = async (req: Request, res: Response): Promise<any> => {
+    public notes: (req: Request, res: Response) => Promise<any> = async (req, res) => {
         try {
             const { id } = res.locals.user;
             if (id) {
-                const notes = await prisma.notes.findMany({
+                const notes: notes[] = await prisma.notes.findMany({
                     where: {
                         userId: id,
                     },

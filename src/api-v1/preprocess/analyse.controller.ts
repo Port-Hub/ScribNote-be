@@ -1,26 +1,27 @@
+import axios, { AxiosResponse } from "axios";
 import { Request, Response } from "express";
 import { readFileSync } from "fs";
 
 class AnalyseController {
     public analyseFunction = async (params: any, callback: (arg0: { message: any; code: number; }) => any) => {
         try {
-            const query = async (filename: any) => {
+            const query: (arg: any) => Promise<any> = async (filename) => {
                 try{
                     const { path } = filename;
                     const data: Buffer = readFileSync(path);
-                    const response: any = await fetch(
+                    const response: AxiosResponse<any,any> = await axios.post(
                         "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h",
+                        data,
                         {
-                            headers: { Authorization: "Bearer "+process.env.HF_API_KEY },
-                            method: "POST",
-                            body: data,
+                            headers: { Authorization: "Bearer "+process.env.HF_API_KEY }
                         }
+
                     );
-                    const result: any = await response.json();
-                    if(result.error)
+                    const result: any = await response.data;
+                    if(response.status !== 200)
                     {
-                        console.log("Analyse Function : "+result.error);
-                        return callback({ message: result.error, code: 500})
+                        console.log("Analyse Function : "+result);
+                        return callback({ message: result, code: response.status})
                     }
                     else
                     {
@@ -28,7 +29,7 @@ class AnalyseController {
                     }
                     } catch (err) {
                         console.log("Analyse Function : "+err);
-                        return callback({ message: "Internal Error", code: 500 });
+                        return callback({ message: err, code: 500 });
                     }
             }
             
@@ -42,7 +43,7 @@ class AnalyseController {
         }
     }
 
-    public callbackFunction = async (req: Request, res: Response) => {
+    public callbackFunction: (req: any, res: any) => Promise<void> = async (req, res) => {
         const params: any = req.file;
         await this.analyseFunction(params, (results: any) => {
             if (!results) {
