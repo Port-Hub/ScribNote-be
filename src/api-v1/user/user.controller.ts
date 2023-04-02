@@ -38,6 +38,41 @@ class UserController
             });
         }
     }
+
+    public notes = async (req: Request, res: Response): Promise<any> => {
+        try {
+            const { id } = res.locals.user;
+            if (id) {
+                const notes = await prisma.notes.findMany({
+                    where: {
+                        userId: id,
+                    },
+                });
+                if (notes) {
+                    res.json({
+                        success: true,
+                        message: "Notes found",
+                        notes,
+                    });
+                } else {
+                    res.json({
+                        success: false,
+                        message: "Notes not found",
+                    });
+                }
+            } else {
+                res.json({
+                    success: false,
+                    message: "Please log in again",
+                });
+            }
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.toString(),
+            });
+        }
+    }
 }
 
 export default UserController;

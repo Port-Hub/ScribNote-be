@@ -34,7 +34,6 @@ export default class SummarizeController {
 
     public callbackFunction = async (req: Request, res: Response) => {
         const params = req.body;
-        console.log(params.paragraph)
         await this.summarizeFunction(params.paragraph, (results: any) => {
             if (!results) {
                 console.log("Error");
