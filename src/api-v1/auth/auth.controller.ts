@@ -8,15 +8,25 @@ class AuthController {
     try {
       const { email, password, username } = req.body;
       if (email && password && username) {
-        const userAvailable = await prisma.users.findFirst({
+        const emailAvailable = await prisma.users.findFirst({
           where: { email },
         });
+        const userAvailable = await prisma.users.findFirst({
+          where: { username },
+        });
+        if (emailAvailable) {
+          res.json({
+            success: false,
+            message: "Email already exists",
+          }); 
+        } 
         if (userAvailable) {
           res.json({
             success: false,
             message: "User already exists",
           });
-        } else {
+        }
+        else {
           let hashedPassword = await hash(password, 10);
           let userCreated = await prisma.users.create({
             data: {
