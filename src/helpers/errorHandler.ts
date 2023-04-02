@@ -1,6 +1,6 @@
 import * as httpStatus from "http-status";
 
-export const notFound = (err: any, req: any, res: any, next: any) => {
+const notFound = (err: any, req: any, res: any, next: any) => {
   res.status(httpStatus.NOT_FOUND);
   res.json({
     success: false,
@@ -9,7 +9,7 @@ export const notFound = (err: any, req: any, res: any, next: any) => {
   res.end();
 };
 
-export const internalServerError = (err: any, req: any, res: any, next: any) => {
+const internalServerError = (err: any, req: any, res: any, next: any) => {
   res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR);
   res.json({
     message: err.message,
@@ -18,3 +18,5 @@ export const internalServerError = (err: any, req: any, res: any, next: any) => 
   });
   res.end();
 };
+
+export { notFound, internalServerError }

@@ -1,8 +1,8 @@
 import app from "./app";
-import * as dotenv from "dotenv";
 import prisma from "./middleware/prisma";
+import { config } from "dotenv";
 
-dotenv.config();
+config();
 
 const PORT: String | undefined = process.env.PORT;
 
@@ -14,7 +14,7 @@ app.listen(PORT || 5000, () =>
       }`)
 );
 
-process.on("SIGINT", function () {
+process.on("SIGINT", () => {
   prisma.$disconnect();
   console.log("Prisma Disconnected.");
   process.exit(0);

@@ -2,9 +2,11 @@ import * as path from "path";
 import * as multer from "multer";
 import * as e from "express";
 import AnalyseController from "./analyse.controller";
+import SummarizeController from "./summarize.controller";
 
-const analyse: e.Router = e.Router();
+const preprocess: e.Router = e.Router();
 const analyseController = new AnalyseController();
+const summarizeController = new SummarizeController();
 
 const storage: any = multer.diskStorage({
     destination: "./public/audio/",
@@ -18,6 +20,7 @@ const storage: any = multer.diskStorage({
     limits:{fileSize: 100000000},
  }).single("myVoice");
 
-analyse.post("/",upload,analyseController.callbackFunction);
+preprocess.post("/analyse",upload,analyseController.callbackFunction);
+preprocess.post("/summarize",summarizeController.callbackFunction);
 
-export default analyse;
+export default preprocess;
