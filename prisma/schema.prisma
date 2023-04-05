@@ -8,7 +8,7 @@ datasource db {
 }
 
 model users {
-  id String @id @default(uuid()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   username  String   @unique 
   password  String   
@@ -18,7 +18,7 @@ model users {
 }
 
 model notes {
-  id String @id @default(uuid()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
   name        String @unique 
   nameSlug    String @unique 
