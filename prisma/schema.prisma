@@ -19,11 +19,11 @@ model users {
 
 model notes {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String
-  name        String @unique 
-  nameSlug    String @unique 
-  docUrl      String @unique 
-  audioUrl    String @unique 
+  userId      String @db.ObjectId
+  name        String @unique
+  nameSlug    String @unique
+  docLoc      String @unique
+  audioLoc    String @unique
   accessCount Int?   @default(0)
   createdAt   DateTime @default(now())
   credits     Int  @default(2)
