@@ -8,7 +8,7 @@ class UploadController {
     storage: any = multer.diskStorage({
         destination: "./public/audio/",
         filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-           cb(null,"Voice-" + Date.now() + path.extname(file.originalname));
+            cb(null,"Voice-" + Date.now() + path.extname(file.originalname));
         }
      });
     
@@ -35,7 +35,6 @@ class UploadController {
                             name: name,
                             nameSlug: nameSlug,
                             docLoc: "Empty",
-                            // userId: res.locals.user.id,
                             audioLoc: req.file.path,
                             user: {
                                 connect: {
