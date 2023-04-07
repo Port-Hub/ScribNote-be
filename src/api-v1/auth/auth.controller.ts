@@ -72,7 +72,7 @@ class AuthController {
         if (userAvailable) {
           let isMatch: boolean = await compare(password, userAvailable.password);
           if (isMatch) {
-            let payload: { id: any } = { id: userAvailable.id };
+            let payload: { id: any, username: any, wallet: any } = { id: userAvailable.id, username: userAvailable.username, wallet: userAvailable.wallet };
             let token: string = sign({ payload }, process.env.JWT_AUTH_SECRET, {
               expiresIn: "1h",
             });
