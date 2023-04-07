@@ -3,14 +3,14 @@ import prisma from "./prisma";
 
 const findID = async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body;
-    const id = await prisma.notes.findUnique({
+    const doc = await prisma.notes.findUnique({
         where: {
             name: name
         }
     });
-    if(id)
+    if(doc)
     {
-        res.locals.id = id;
+        res.locals.doc = doc;
         next();
     }
     else{

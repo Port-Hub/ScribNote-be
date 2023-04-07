@@ -5,13 +5,14 @@ class GenController
 {
     public generatepdf: (req: Request, res: Response) => any = async (req, res) => {
         const { content } = req.body;
-        const id = res.locals.id;
+        const doc = res.locals.doc;
         try{
-            const pdf = await createPdf(content);
+            const pdf = createPdf(content);
+            console.log(pdf);
             res.status(200).json({
                 message: "PDF Generated",
                 data: {
-                    pdf: pdf
+                    doc
                 }
             });
         }
