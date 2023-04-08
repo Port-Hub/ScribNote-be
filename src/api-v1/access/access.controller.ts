@@ -7,16 +7,8 @@ class AccessController
     {
         try
         {
-            const slug = req.params.slug;
+            const doc = res.locals.doc;
             const user = res.locals.user;
-            const doc = await prisma.notes.findFirst({
-                where: {
-                    nameSlug: slug,
-                    user: {
-                        id: user.id
-                    }
-                },
-            });
             if(doc)
             {
                 if(user.wallet >= doc.credits)
@@ -34,7 +26,7 @@ class AccessController
 
                     const updateDoc = await prisma.notes.update({
                         where: {
-                            nameSlug: slug,
+                            id: doc.id,
                         },
                         data: {
                             accessCount: {

@@ -12,8 +12,8 @@ router.use("/auth",auth);
 
 router.use("/user",validateUser,user);
 router.use("/upload",validateUser,upload);
-router.use("/access",validateUser,access);
 
-router.use("/generate",validateNotes,gen);
+router.use("/access",validateUser,validateNotes,access);
+router.use("/generate",validateUser,validateNotes,gen);
 
 export default router;
