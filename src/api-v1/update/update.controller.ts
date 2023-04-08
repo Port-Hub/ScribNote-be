@@ -84,6 +84,46 @@ class UpdateController {
             });
         }
     }
+    public updateWallet: (req: Request, res: Response) => Promise<any> = async (req, res) => {
+        try {
+            const { id, wallet } = res.locals.user;
+            if (id && wallet <= 10) {
+                const user: users = await prisma.users.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        wallet: {
+                            increment: 10
+                        }
+                    },
+                });
+                if (user) {
+                    const { id, password, createdAt, ...others } = user;
+                    res.json({
+                        success: true,
+                        message: "Wallet updated",
+                        user: others,
+                    });
+                } else {
+                    res.json({
+                        success: false,
+                        message: "Wallet not updated",
+                    });
+                }
+            } else {
+                res.json({
+                    success: false,
+                    message: "Cannot provide credits",
+                });
+            }
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.toString(),
+            });
+        }
+    }
 }
 
 export default UpdateController;

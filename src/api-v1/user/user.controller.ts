@@ -46,7 +46,9 @@ class UserController
             if (id) {
                 const notes: notes[] = await prisma.notes.findMany({
                     where: {
-                        userId: id,
+                        user: {
+                            id,
+                        }
                     },
                 });
                 if (notes) {

@@ -105,6 +105,55 @@ class AuthController {
       });
     }
   };
+
+  public forgot: (req: Request, res: Response) => Promise<any> = async (req, res) => {
+      try {
+        const { email, newpass } = req.body;
+        if (email) {
+          const userAvailable: users = await prisma.users.findFirst({
+            where: { email },
+          });
+          if (userAvailable) {
+            let hashedPassword: string = await hash(newpass, 10);
+            let userUpdated: users = await prisma.users.update({
+              where: { id: userAvailable.id },
+              data: {
+                password: hashedPassword,
+              },
+            });
+            if (userUpdated) {
+              res.json({
+                success: true,
+                message: "Password updated successfully",
+              });
+            }
+            else {
+              res.json({
+                success: false,
+                message: "Something went wrong",
+              });
+            }
+          } else {
+            res.json({
+              success: false,
+              message: "User not found",
+            });
+          }
+        }
+        else {
+          res.json({
+            success: false,
+            message: "Please provide all the required fields",
+          });
+        }
+      }
+      catch (err) {
+        return res.status(500).json({
+          success: false,
+          message: err.toString(),
+        });
+      }
+    }
 }
 
 export default AuthController;

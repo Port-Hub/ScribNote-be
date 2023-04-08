@@ -1,7 +1,8 @@
-import * as httpStatus from "http-status";
+import { INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status";
+
 
 const notFound: (err: any, req: any, res: any, next: any) => void = (err, req, res, next) => {
-  res.status(httpStatus.NOT_FOUND);
+  res.status(NOT_FOUND);
   res.json({
     success: false,
     message: "Requested Resource Not Found",
@@ -10,7 +11,7 @@ const notFound: (err: any, req: any, res: any, next: any) => void = (err, req, r
 };
 
 const internalServerError: (err: any, req: any, res: any, next: any) => void = (err, req, res, next) => {
-  res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR);
+  res.status(err.status || INTERNAL_SERVER_ERROR);
   res.json({
     message: err.message,
     extra: err.extra,
