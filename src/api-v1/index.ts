@@ -1,5 +1,5 @@
 import { Router } from "express";
-import preprocess from "./preprocess/preprocess.route";
+import analyse from "./analyse/analyse.route";
 import auth from "./auth/auth.route";
 import user from "./user/user.route";
 import { validateUser, validateNotes } from "../middleware/validate";
@@ -9,7 +9,7 @@ import access from "./access/access.route";
 
 const router: Router = Router();
 
-router.use("/preprocess",preprocess);
+router.use("/analyse",validateNotes,analyse);
 router.use("/auth",auth);
 router.use("/user",validateUser,user);
 router.use("/upload",validateUser,upload);
