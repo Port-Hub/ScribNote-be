@@ -1,29 +1,33 @@
-import { Request, Response } from "express";
+import { users } from "@prisma/client";
+import { hash } from "bcryptjs";
 import prisma from "../../middleware/prisma";
-import { notes, users } from "@prisma/client";
+import { Request, Response } from "express";
 
-class UserController
-{
-    public profile: (req: Request, res: Response) => Promise<any> = async (req, res) => {
+class UpdateController {
+    public updateEmail: (req: Request, res: Response) => Promise<any> = async (req, res) => {
         try {
             const { id } = res.locals.user;
+            const { email } = req.body;
             if (id) {
-                const user: users = await prisma.users.findUnique({
+                const user: users = await prisma.users.update({
                     where: {
                         id,
+                    },
+                    data: {
+                        email,
                     },
                 });
                 if (user) {
                     const { id, password, createdAt, ...others } = user;
                     res.json({
                         success: true,
-                        message: "Profile found",
+                        message: "Email updated",
                         user: others,
                     });
                 } else {
                     res.json({
                         success: false,
-                        message: "Profile not found",
+                        message: "Email not updated",
                     });
                 }
             } else {
@@ -32,7 +36,7 @@ class UserController
                     message: "Please log in again",
                 });
             }
-        } catch (err: any) {
+        } catch (err) {
             return res.status(500).json({
                 success: false,
                 message: err.toString(),
@@ -40,25 +44,31 @@ class UserController
         }
     }
 
-    public notes: (req: Request, res: Response) => Promise<any> = async (req, res) => {
+    public updatePassword: (req: Request, res: Response) => Promise<any> = async (req, res) => {
         try {
             const { id } = res.locals.user;
+            const { password } = req.body;
+            let hashedPassword: string = await hash(password, 10);
             if (id) {
-                const notes: notes[] = await prisma.notes.findMany({
+                const user: users = await prisma.users.update({
                     where: {
-                        userId: id,
+                        id,
+                    },
+                    data: {
+                        password: hashedPassword,
                     },
                 });
-                if (notes) {
+                if (user) {
+                    const { id, password, createdAt, ...others } = user;
                     res.json({
                         success: true,
-                        message: "Notes found",
-                        notes,
+                        message: "Password updated",
+                        user: others,
                     });
                 } else {
                     res.json({
                         success: false,
-                        message: "Notes not found",
+                        message: "Password not updated",
                     });
                 }
             } else {
@@ -76,4 +86,4 @@ class UserController
     }
 }
 
-export default UserController;
+export default UpdateController;
