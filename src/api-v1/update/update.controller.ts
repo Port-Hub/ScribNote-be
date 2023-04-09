@@ -1,4 +1,4 @@
-import { users } from "@prisma/client";
+import { users } from ".prisma/client";
 import { hash } from "bcryptjs";
 import prisma from "../../middleware/prisma";
 import { Request, Response } from "express";
@@ -36,10 +36,10 @@ class UpdateController {
                     message: "Please log in again",
                 });
             }
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({
                 success: false,
-                message: err.toString(),
+                message: await err.toString(),
             });
         }
     }
@@ -77,10 +77,10 @@ class UpdateController {
                     message: "Please log in again",
                 });
             }
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({
                 success: false,
-                message: err.toString(),
+                message: await err.toString(),
             });
         }
     }
@@ -117,10 +117,10 @@ class UpdateController {
                     message: "Cannot provide credits",
                 });
             }
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({
                 success: false,
-                message: err.toString(),
+                message: await err.toString(),
             });
         }
     }

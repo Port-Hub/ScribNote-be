@@ -4,7 +4,7 @@ import { config } from "dotenv";
 
 config();
 
-const PORT: String | undefined = process.env.PORT;
+const PORT: String = process.env.PORT!;
 
 // Connections Begin
 

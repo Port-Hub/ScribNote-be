@@ -1,5 +1,6 @@
 import { validateUser, validateNotes } from "../middleware/validate";
 import { Router } from "express";
+
 import auth from "./auth/auth.route";
 import user from "./user/user.route";
 import upload from "./upload/upload.route";

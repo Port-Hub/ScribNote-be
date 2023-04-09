@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import prisma from "../../middleware/prisma";
+import { notes, users } from ".prisma/client";
 
 class AccessController
 {
@@ -7,11 +8,11 @@ class AccessController
     {
         try
         {
-            const doc = res.locals.doc;
-            const user = res.locals.user;
+            const doc: any = res.locals.doc;
+            const user: any = res.locals.user;
             if(user.wallet >= doc.credits)
             {
-                const updateUser = await prisma.users.update({
+                const updateUser: users = await prisma.users.update({
                     where: {
                         id: user.id
                     },
@@ -22,7 +23,7 @@ class AccessController
                     }
                 });
 
-                const updateDoc = await prisma.notes.update({
+                const updateDoc: notes = await prisma.notes.update({
                     where: {
                         id: doc.id,
                     },
@@ -35,10 +36,13 @@ class AccessController
 
                 if(updateDoc && updateUser)
                 {
-                    res.status(200).download(doc.docLoc, doc.name, (err) => {
+                    res.status(200).download(doc.docLoc, doc.name, async (err: any) => {
                         if (err)
                         {
-                            res.status(500).json(err);
+                            res.status(500).json({
+                                error: await err.message,
+                                message: "Try regenerating notes"
+                            });
                         }
                     });
                 }
@@ -52,9 +56,9 @@ class AccessController
                 res.status(400).json({ message: "Insufficient credits" });
             }
         }
-        catch (err)
+        catch (err: any)
         {
-            res.status(500).json(err.message);
+            res.status(500).json(await err.message);
         }
     }
 }

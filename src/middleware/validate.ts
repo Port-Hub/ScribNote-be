@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express"
 import { verify, VerifyErrors } from "jsonwebtoken"
 import prisma from "./prisma"
+import { notes } from ".prisma/client"
 
-const validateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const validateUser: (req: any, res: any, next: any) => Promise<void> = async (req, res, next) => {
     try {
         let token: string = req.headers.authorization?.split(" ")[1]
         let jwtSecret: string = process.env.JWT_AUTH_SECRET!
@@ -24,19 +25,19 @@ const validateUser = async (req: Request, res: Response, next: NextFunction): Pr
                 message: "Please provide token"
             })
         }
-    } catch (err) {
+    } catch (err: any) {
         res.status(500).json({
             message: "Error validating user",
-            error: err.message
+            error: await err.message
         })
     }
 }
 
-const validateNotes = async (req: Request, res: Response, next: NextFunction) => {
+const validateNotes: (req: Request, res: Response, next: NextFunction) => Promise<any> = async (req, res, next) => {
     try {
-        const slug = req.params.slug;
-        const user = res.locals.user;
-        const doc = await prisma.notes.findFirst({
+        const slug: string = req.params.slug;
+        const user: any = res.locals.user;
+        const doc: notes = await prisma.notes.findFirst({
             where: {
                 nameSlug: slug,
                 user: {
@@ -55,10 +56,10 @@ const validateNotes = async (req: Request, res: Response, next: NextFunction) =>
                 error: "Doc not found"
             });
         }
-    } catch (err) {
+    } catch (err: any) {
         res.status(500).json({
             message: "Error validating notes",
-            error: err.message
+            error: await err.message
         })
     }
 }

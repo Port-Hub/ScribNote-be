@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../../middleware/prisma";
-import { notes, users } from "@prisma/client";
+import { notes, users } from ".prisma/client";
 
 class UserController
 {
@@ -35,7 +35,7 @@ class UserController
         } catch (err: any) {
             return res.status(500).json({
                 success: false,
-                message: err.toString(),
+                message: await err.toString(),
             });
         }
     }
@@ -69,10 +69,10 @@ class UserController
                     message: "Please log in again",
                 });
             }
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({
                 success: false,
-                message: err.toString(),
+                message: await err.toString(),
             });
         }
     }

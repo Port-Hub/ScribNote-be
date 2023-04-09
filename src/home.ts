@@ -5,7 +5,7 @@ const home: Router = Router();
 // API Home Page
 home.get("/", async (req: Request, res: Response) => {
   try {
-    var title = `ScribNote`;
+    var title: string = `ScribNote`;
     res
       .status(200)
       .send(

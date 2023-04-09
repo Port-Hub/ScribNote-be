@@ -2,6 +2,7 @@ import * as path from "path";
 import * as multer from "multer";
 import { Request, Response , RequestHandler } from "express";
 import prisma from "../../middleware/prisma";
+import { notes } from ".prisma/client";
 
 class UploadController {
 
@@ -22,40 +23,59 @@ class UploadController {
             if(err){
                 res.status(400).json({
                     message: "Error uploading file",
-                    error: err
+                    error: await err
                 });
             }
             else{
                 try
                 {
-                    const name = req.body.name;
-                    const nameSlug = name.replace(/\s+/g, "-").toLowerCase();
-                    const fileAdded = await prisma.notes.create({
-                        data: {
-                            name: name,
-                            nameSlug: nameSlug,
-                            docLoc: "Empty",
-                            audioLoc: req.file.path,
-                            user: {
-                                connect: {
-                                    id: res.locals.user.id
-                                }
-                            }
-                        }});
-                    if(fileAdded)
+                    const name: string = req.body.name;
+                    const nameSlug: string = name.replace(/\s+/g, "-").toLowerCase();
+                    const nameExists: notes = await prisma.notes.findFirst({
+                        where: {
+                            name: name
+                        }
+                    });
+                    const slugExists: notes = await prisma.notes.findFirst({
+                        where: {
+                            nameSlug: nameSlug
+                        }
+                    });
+                    if(nameExists || slugExists)
                     {
-                        res.status(200).json({
-                            message: "File is uploaded",
-                            data: {
-                                file: req.file
-                            }
+                        res.status(400).json({
+                            message: "Name already exists"
                         });
                     }
-                    else{
-                        res.status(400).json({
-                            message: "Error uploading file",
-                            error: err.message
-                        });
+                    else
+                    {
+                        const fileAdded: notes = await prisma.notes.create({
+                            data: {
+                                name: name,
+                                nameSlug: nameSlug,
+                                docLoc: "Empty",
+                                audioLoc: req.file.path,
+                                user: {
+                                    connect: {
+                                        id: res.locals.user.id
+                                    }
+                                }
+                            }});
+                        if(fileAdded)
+                        {
+                            res.status(200).json({
+                                message: "File is uploaded",
+                                data: {
+                                    file: req.file
+                                }
+                            });
+                        }
+                        else{
+                            res.status(400).json({
+                                message: "Error uploading file",
+                                error: await err.message
+                            });
+                        }
                     }
                 }
                 catch(err: any)
@@ -63,7 +83,7 @@ class UploadController {
                     console.log(err);
                     res.status(400).json({
                         message: "Error uploading file",
-                        error: err.message
+                        error: await err.message
                     });
                 }
             }

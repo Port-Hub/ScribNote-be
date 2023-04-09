@@ -5,10 +5,11 @@ import { cohereResponse, summarizeResponse } from "cohere-ai/dist/models";
 import { readFileSync } from "fs";
 import createPdf from '../../middleware/pdfkit';
 import prisma from '../../middleware/prisma';
+import { notes } from ".prisma/client";
 
 class GenController
 {
-    public analyse = async (req: Request, res: Response, next: NextFunction) => {
+    public analyse: (req: Request, res: Response, next: NextFunction) => Promise<void> = async (req, res, next) => {
         try {
             const { audioLoc, ...others } = res.locals.doc;
             const data: Buffer = readFileSync(audioLoc);
@@ -36,7 +37,7 @@ class GenController
         catch(err: any) {
             console.log("Analyse Function : "+err);
             res.status(500).json({
-                message: err
+                message: await err.toString()
             });
         }
     }
@@ -45,7 +46,7 @@ class GenController
         try {
             const coherekey: string = process.env.COHERE_API_KEY!
             cohere.init(coherekey);
-            const result = res.locals.result;
+            const result: any = res.locals.result;
             const response: cohereResponse<summarizeResponse> = await cohere.summarize({
                 text: result.text,
                 length: 'medium',
@@ -66,18 +67,18 @@ class GenController
         }
         catch(err: any) {
             console.log("Summarize Function : "+err);
-            return res.status(500).json({ message: err.message });
+            return res.status(500).json({ message: await err.message });
         }
     }
 
     public generate: (req: Request, res: Response) => any = async (req, res) => {
-        const content = res.locals.content;
-        const doc = res.locals.doc;
+        const content: any = res.locals.content;
+        const doc: any = res.locals.doc;
         try{
-            const pdfpath = createPdf(content);
+            const pdfpath: string = createPdf(content);
             if(pdfpath)
             {
-                const updatedoc = await prisma.notes.update({
+                const updatedoc: notes = await prisma.notes.update({
                     where: {
                         id: doc.id
                     },
@@ -102,11 +103,11 @@ class GenController
                 }
             }
         }
-        catch(err){
+        catch(err: any){
             res.status(500).json({
                 message: "Error generating PDF",
                 data: {
-                    error: err.message
+                    error: await err.message
                 }
             });
         }

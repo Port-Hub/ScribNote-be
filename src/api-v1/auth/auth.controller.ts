@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { hash, compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import prisma from "../../middleware/prisma";
-import { users } from "@prisma/client";
+import { users } from ".prisma/client";
 
 class AuthController {
   public register: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>> = async (req, res) => {
@@ -55,7 +55,7 @@ class AuthController {
     } catch (err) {
       return res.status(500).json({
         success: false,
-        message: err.toString(),
+        message: await err.toString(),
       });
     }
   };
@@ -98,10 +98,10 @@ class AuthController {
           message: "Please provide all the required fields",
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       return res.status(500).json({
         success: false,
-        message: err.toString(),
+        message: await err.toString(),
       });
     }
   };
@@ -147,10 +147,10 @@ class AuthController {
           });
         }
       }
-      catch (err) {
+      catch (err: any) {
         return res.status(500).json({
           success: false,
-          message: err.toString(),
+          message: await err.toString(),
         });
       }
     }
